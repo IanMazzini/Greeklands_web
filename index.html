@@ -74,7 +74,7 @@
           <div class="hidden md:flex items-center gap-6">
             <a href="#about" class="hover:text-egeo">Sobre</a>
             <a href="#staff" class="hover:text-egeo">Staff</a>
-            <a href="#sanctions" class="hover:text-egeo">Sanciones</a>
+            <a href="./sanctions.html" class="hover:text-egeo">Sanciones</a>
             <a href="#account" class="hover:text-egeo">Cuenta</a>
             <a href="#map" class="hover:text-egeo">Dynmap</a>
             <a href="#news" class="hover:text-egeo">Noticias</a>
@@ -160,50 +160,60 @@
     </div>
   </section>
 
-  <!-- STAFF -->
-  <section id="staff" class="py-16 md:py-24 bg-white/60 dark:bg-slate-800/40">
-    <div class="mx-auto max-w-6xl px-6">
-      <h2 class="font-display text-3xl mb-8">Staff</h2>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Card Staff -->
-        <article class="glass rounded-2xl p-6 shadow-suave">
+<!-- STAFF -->
+<section id="staff" class="py-16 md:py-24 bg-white/60 dark:bg-slate-800/40">
+  <div class="mx-auto max-w-6xl px-6 text-center">
+    <h2 class="font-display text-3xl mb-8">Staff</h2>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
+
+      <!--
+      <article class="glass rounded-2xl p-6 shadow-suave">
+        <div class="flex items-center gap-4">
+          <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
+               src="https://mc-heads.net/avatar/Tempedroid/128" alt="IanMazzini">
+          <div>
+            <h3 class="font-semibold">Tempedroid</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Fundador & Desarrollador</p>
+          </div>
+        </div>
+        <p class="mt-4 text-sm">“Si no existe, lo creamos.”</p>
+      </article>
+      -->
+
+      <!-- CARD ACTUAL (centrada perfectamente) -->
+        <article class="glass rounded-2xl p-6 shadow-suave col-span-full max-w-md w-full mx-auto text-left">
           <div class="flex items-center gap-4">
             <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
-                 src="https://mc-heads.net/avatar/Tempedroid/128" alt="IanMazzini">
+                src="https://mc-heads.net/avatar/Tempedroid/128" alt="Roman">
             <div>
               <h3 class="font-semibold">Tempedroid</h3>
-              <p class="text-sm text-slate-500 dark:text-slate-400">Fundador & Desarrollador</p>
-            </div>
-          </div>
-          <p class="mt-4 text-sm">“Si no existe, lo creamos.”</p>
-        </article>
-
-        <article class="glass rounded-2xl p-6 shadow-suave">
-          <div class="flex items-center gap-4">
-            <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
-                 src="https://mc-heads.net/avatar/Roman/128" alt="Roman">
-            <div>
-              <h3 class="font-semibold">Roman</h3>
               <p class="text-sm text-slate-500 dark:text-slate-400">Administrador Técnico</p>
             </div>
           </div>
           <p class="mt-4 text-sm">Infra y plugins bajo control.</p>
         </article>
 
-        <article class="glass rounded-2xl p-6 shadow-suave">
-          <div class="flex items-center gap-4">
-            <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
-                 src="https://mc-heads.net/avatar/Eco/128" alt="Eco">
-            <div>
-              <h3 class="font-semibold">Eco</h3>
-              <p class="text-sm text-slate-500 dark:text-slate-400">Moderador Jefe</p>
-            </div>
+
+
+      <!--
+      <article class="glass rounded-2xl p-6 shadow-suave">
+        <div class="flex items-center gap-4">
+          <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
+               src="https://mc-heads.net/avatar/Eco/128" alt="Eco">
+          <div>
+            <h3 class="font-semibold">Eco</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Moderador Jefe</p>
           </div>
-          <p class="mt-4 text-sm">Justicia con mano de Zeus.</p>
-        </article>
-      </div>
+        </div>
+        <p class="mt-4 text-sm">Justicia con mano de Zeus.</p>
+      </article>
+      -->
+
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- SANCIONES -->
   <section id="sanctions" class="py-16 md:py-24">
@@ -305,11 +315,11 @@
       <div class="flex items-end justify-between gap-4">
         <h2 class="font-display text-3xl">Mapa en vivo (Dynmap)</h2>
         <a class="px-4 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-           href="https://map.tu-dominio.com" target="_blank" rel="noopener">Abrir completa</a>
+           href="http://dynmap.greeklands.com.ar:8308/" target="_blank" rel="noopener">Abrir completa</a>
       </div>
       <div class="mt-6 aspect-video overflow-hidden rounded-2xl shadow-suave ring-1 ring-slate-200 dark:ring-slate-700">
         <!-- TODO: reemplazar src por tu dynmap -->
-        <iframe src="https://map.tu-dominio.com" class="w-full h-full" loading="lazy"></iframe>
+        <iframe src="http://dynmap.greeklands.com.ar:8308/" class="w-full h-full" loading="lazy"></iframe>
       </div>
       <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Si usás proxy/Nginx, recuerda habilitar iframes (X-Frame-Options).</p>
     </div>

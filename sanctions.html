@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreekLands — Forja tu destino entre los dioses</title>
+  <meta name="description" content="Servidor de Minecraft inspirado en mitología griega. Survival con misiones, economía y puntos de poder.">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind config (fuentes)
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { display: ['Cinzel', 'serif'], body: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            egeo: '#3C64B1',
+            marmol: '#F5F5F5',
+            dorado: '#FFD700',
+          },
+          boxShadow: {
+            suave: '0 10px 30px -10px rgba(0,0,0,0.35)',
+          },
+        }
+      }
+    };
+    // Dark mode persistente
+    (function() {
+      const ls = localStorage.getItem('gl-theme');
+      if (ls === 'dark' || (!ls && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  <style>
+    /* Motivo griego sutil en el fondo (SVG pattern) */
+    .greek-pattern {
+      background-image:
+        radial-gradient(ellipse at top, rgba(255,255,255,0.08), rgba(255,255,255,0) 60%),
+        radial-gradient(ellipse at bottom, rgba(255,215,0,0.08), rgba(255,255,255,0) 60%),
+        linear-gradient(135deg, rgba(60,100,177,0.15), rgba(255,255,255,0.05)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 100 100"><path d="M5 50h40v-5H10V5h35V0H5v50zm50 45h40V55H55v40zm5-35h30v30H60V60z" fill="rgba(255,255,255,0.05)"/></svg>');
+      background-size: cover, cover, cover, 220px 220px;
+      background-attachment: fixed, fixed, fixed, fixed;
+    }
+    .glass {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.08);
+    }
+    .dark .glass { background: rgba(0,0,0,0.25); }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <header class="sticky top-0 z-50">
+    <div class="mx-auto max-w-7xl px-4">
+      <nav class="glass shadow-suave rounded-b-2xl">
+        <div class="flex items-center justify-between px-4 py-3">
+          <a href="#home" class="flex items-center gap-3 group">
+            <!-- Logo simple (rayo) -->
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-dorado/80 to-yellow-400/70 shadow ring-2 ring-yellow-300/40">
+              ⚡
+            </span>
+            <div>
+              <div class="font-display text-xl tracking-wide">GreekLands</div>
+              <div class="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Forja tu destino</div>
+            </div>
+          </a>
+          <div class="hidden md:flex items-center gap-6">
+            <a href="#about" class="hover:text-egeo">Sobre</a>
+            <a href="#staff" class="hover:text-egeo">Staff</a>
+            <a href="./sanctions.html" class="hover:text-egeo">Sanciones</a>
+            <a href="#account" class="hover:text-egeo">Cuenta</a>
+            <a href="#map" class="hover:text-egeo">Dynmap</a>
+            <a href="#news" class="hover:text-egeo">Noticias</a>
+            <a href="#community" class="hover:text-egeo">Comunidad</a>
+            <a href="#join" class="px-3 py-1.5 rounded-xl bg-egeo/90 text-white hover:bg-egeo">Unirme</a>
+            <button id="toggleTheme" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" title="Modo oscuro">
+              🌓
+            </button>
+          </div>
+          <button id="openMenu" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700">☰</button>
+        </div>
+        <!-- Mobile -->
+        <div id="mobileMenu" class="hidden md:hidden px-4 pb-4">
+          <div class="grid gap-2">
+            <a href="#about" class="block py-2">Sobre</a>
+            <a href="#staff" class="block py-2">Staff</a>
+            <a href="#sanctions" class="block py-2">Sanciones</a>
+            <a href="#account" class="block py-2">Cuenta</a>
+            <a href="#map" class="block py-2">Dynmap</a>
+            <a href="#news" class="block py-2">Noticias</a>
+            <a href="#community" class="block py-2">Comunidad</a>
+            <a href="#join" class="block py-2 rounded-lg bg-egeo/90 text-white text-center">Unirme</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+<!-- SANCIONES -->
+  <section id="sanctions" class="py-16 md:py-24">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="font-display text-3xl">Historial de sanciones</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Consulta pública (ej: LiteBans API).</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="sanctionSearch" type="text" placeholder="Buscar jugador..."
+                 class="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-800/60">
+          <button id="refreshSanctions" class="px-4 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-6 overflow-x-auto glass rounded-2xl">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-900/80 text-white dark:bg-slate-800/80">
+            <tr>
+              <th class="text-left p-3">Jugador</th>
+              <th class="text-left p-3">Acción</th>
+              <th class="text-left p-3">Motivo</th>
+              <th class="text-left p-3">Duración</th>
+              <th class="text-left p-3">Fecha</th>
+              <th class="text-left p-3">Staff</th>
+            </tr>
+          </thead>
+          <tbody id="sanctionsBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+            <!-- Fila ejemplo - reemplazar por datos de API -->
+            <tr class="hover:bg-white/40 dark:hover:bg-slate-800/40">
+              <td class="p-3 font-mono">Jugador123</td>
+              <td class="p-3">BAN</td>
+              <td class="p-3">X-Ray</td>
+              <td class="p-3">7 días</td>
+              <td class="p-3">2025-10-01</td>
+              <td class="p-3">Eco</td>
+            </tr>
+            <tr class="hover:bg-white/40 dark:hover:bg-slate-800/40">
+              <td class="p-3 font-mono">Athena</td>
+              <td class="p-3">MUTE</td>
+              <td class="p-3">Spam</td>
+              <td class="p-3">2 horas</td>
+              <td class="p-3">2025-09-28</td>
+              <td class="p-3">Roman</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">
+        <!-- TODO: endpoint real -->
+        Integra tu backend en <code>/api/sanctions</code> para poblar la tabla (ej. LiteBans, AdvancedBan).
+      </p>
+    </div>
+  </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const $  = (q) => document.querySelector(q);
+    const $$ = (q) => document.querySelectorAll(q);
+
+    // Navbar mobile (solo si existe)
+    const openMenu = $('#openMenu');
+    if (openMenu) {
+      openMenu.addEventListener('click', () => {
+        const mobileMenu = $('#mobileMenu');
+        if (mobileMenu) mobileMenu.classList.toggle('hidden');
+      });
+    }
+
+    // Modo oscuro (solo si existe)
+    const toggleTheme = $('#toggleTheme');
+    if (toggleTheme) {
+      toggleTheme.addEventListener('click', () => {
+        const html = document.documentElement;
+        const isDark = html.classList.toggle('dark');
+        localStorage.setItem('gl-theme', isDark ? 'dark' : 'light');
+      });
+    }
+
+    // --- SANCIONES ---
+    // Filtro en vivo
+    const sanctionSearch = $('#sanctionSearch');
+    if (sanctionSearch) {
+      const filterSanctions = () => {
+        const term = sanctionSearch.value.toLowerCase();
+        $$('#sanctionsBody tr').forEach(tr => {
+          const player = tr.children[0]?.textContent.toLowerCase() || '';
+          tr.style.display = player.includes(term) ? '' : 'none';
+        });
+      };
+      sanctionSearch.addEventListener('input', filterSanctions);
+    }
+
+    // Botón "Actualizar" (demo)
+    const refreshBtn = $('#refreshSanctions');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', async () => {
+        // TODO: fetch('/api/sanctions') y render real
+        alert('Conecta /api/sanctions a tu plugin/DB. (Demo)');
+      });
+    }
+
+    // TIP: si algún día agregás #year al footer de esta página:
+    // const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+  });
+</script>
+</body>
+  </html>
