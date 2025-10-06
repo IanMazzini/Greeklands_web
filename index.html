@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GreekLands — Forja tu destino entre los dioses</title>
+  <meta name="description" content="Servidor de Minecraft inspirado en mitología griega. Survival con misiones, economía y puntos de poder.">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind config (fuentes)
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { display: ['Cinzel', 'serif'], body: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            egeo: '#3C64B1',
+            marmol: '#F5F5F5',
+            dorado: '#FFD700',
+          },
+          boxShadow: {
+            suave: '0 10px 30px -10px rgba(0,0,0,0.35)',
+          },
+        }
+      }
+    };
+    // Dark mode persistente
+    (function() {
+      const ls = localStorage.getItem('gl-theme');
+      if (ls === 'dark' || (!ls && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  <style>
+    /* Motivo griego sutil en el fondo (SVG pattern) */
+    .greek-pattern {
+      background-image:
+        radial-gradient(ellipse at top, rgba(255,255,255,0.08), rgba(255,255,255,0) 60%),
+        radial-gradient(ellipse at bottom, rgba(255,215,0,0.08), rgba(255,255,255,0) 60%),
+        linear-gradient(135deg, rgba(60,100,177,0.15), rgba(255,255,255,0.05)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 100 100"><path d="M5 50h40v-5H10V5h35V0H5v50zm50 45h40V55H55v40zm5-35h30v30H60V60z" fill="rgba(255,255,255,0.05)"/></svg>');
+      background-size: cover, cover, cover, 220px 220px;
+      background-attachment: fixed, fixed, fixed, fixed;
+    }
+    .glass {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.08);
+    }
+    .dark .glass { background: rgba(0,0,0,0.25); }
+  </style>
+</head>
+<body class="font-body text-slate-800 dark:text-slate-100 bg-marmol dark:bg-slate-900 greek-pattern">
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-50">
+    <div class="mx-auto max-w-7xl px-4">
+      <nav class="glass shadow-suave rounded-b-2xl">
+        <div class="flex items-center justify-between px-4 py-3">
+          <a href="#home" class="flex items-center gap-3 group">
+            <!-- Logo simple (rayo) -->
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-dorado/80 to-yellow-400/70 shadow ring-2 ring-yellow-300/40">
+              ⚡
+            </span>
+            <div>
+              <div class="font-display text-xl tracking-wide">GreekLands</div>
+              <div class="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Forja tu destino</div>
+            </div>
+          </a>
+          <div class="hidden md:flex items-center gap-6">
+            <a href="#about" class="hover:text-egeo">Sobre</a>
+            <a href="#staff" class="hover:text-egeo">Staff</a>
+            <a href="#sanctions" class="hover:text-egeo">Sanciones</a>
+            <a href="#account" class="hover:text-egeo">Cuenta</a>
+            <a href="#map" class="hover:text-egeo">Dynmap</a>
+            <a href="#news" class="hover:text-egeo">Noticias</a>
+            <a href="#community" class="hover:text-egeo">Comunidad</a>
+            <a href="#join" class="px-3 py-1.5 rounded-xl bg-egeo/90 text-white hover:bg-egeo">Unirme</a>
+            <button id="toggleTheme" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" title="Modo oscuro">
+              🌓
+            </button>
+          </div>
+          <button id="openMenu" class="md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-700">☰</button>
+        </div>
+        <!-- Mobile -->
+        <div id="mobileMenu" class="hidden md:hidden px-4 pb-4">
+          <div class="grid gap-2">
+            <a href="#about" class="block py-2">Sobre</a>
+            <a href="#staff" class="block py-2">Staff</a>
+            <a href="#sanctions" class="block py-2">Sanciones</a>
+            <a href="#account" class="block py-2">Cuenta</a>
+            <a href="#map" class="block py-2">Dynmap</a>
+            <a href="#news" class="block py-2">Noticias</a>
+            <a href="#community" class="block py-2">Comunidad</a>
+            <a href="#join" class="block py-2 rounded-lg bg-egeo/90 text-white text-center">Unirme</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="relative">
+    <div class="relative overflow-hidden">
+      <div class="absolute inset-0 -z-10">
+        <!-- Video o imagen de fondo -->
+        <!-- TODO: reemplazar por tu video/imagen -->
+        <div class="h-[70vh] md:h-[85vh] w-full bg-[url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1400&auto=format&fit=crop')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/50 to-slate-900/80"></div>
+      </div>
+
+      <div class="mx-auto max-w-5xl px-6 py-24 md:py-36 text-center text-white">
+        <h1 class="font-display text-4xl md:text-6xl leading-tight">
+          Forja tu destino entre los dioses
+        </h1>
+        <p class="mt-5 text-lg md:text-xl text-slate-200">
+          Survival con <span class="font-semibold">misiones</span>, <span class="font-semibold">economía</span> y <span class="font-semibold">puntos de poder</span> en un mundo inspirado en la mitología griega.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <button class="px-5 py-3 rounded-xl bg-dorado text-slate-900 font-semibold hover:brightness-110 shadow-suave" onclick="copyIP()">
+            Copiar IP del servidor
+          </button>
+          <a class="px-5 py-3 rounded-xl bg-white/20 border border-white/30 hover:bg-white/30"
+             href="#map">Ver Dynmap</a>
+          <!-- TODO: tu invitación real -->
+          <a class="px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600" href="https://discord.gg/TU_INVITE" target="_blank" rel="noopener">Unirme al Discord</a>
+        </div>
+        <div class="mt-4 text-sm text-slate-300">IP: <span id="serverIP" class="font-mono">play.greeklands.ar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="about" class="py-16 md:py-24">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div class="glass rounded-2xl p-8 shadow-suave">
+          <h2 class="font-display text-3xl mb-4">El mundo de GreekLands</h2>
+          <p class="text-slate-700 dark:text-slate-300">
+            Un survival donde cada jugador escribe su epopeya. Completa <strong>misiones</strong>, busca <strong>templos</strong>, gana <strong>puntos de poder</strong> y asciende en el favor de los dioses.
+          </p>
+          <ul class="mt-6 grid grid-cols-2 gap-3 text-sm">
+            <li class="p-3 rounded-xl bg-white/60 dark:bg-slate-800/60">⚔️ Misiones y Lore propio</li>
+            <li class="p-3 rounded-xl bg-white/60 dark:bg-slate-800/60">🏛️ Templos y Ruinas</li>
+            <li class="p-3 rounded-xl bg-white/60 dark:bg-slate-800/60">💰 Economía balanceada</li>
+            <li class="p-3 rounded-xl bg-white/60 dark:bg-slate-800/60">🗺️ Dynmap en vivo</li>
+          </ul>
+        </div>
+        <div class="relative">
+          <div class="aspect-video rounded-2xl overflow-hidden shadow-suave ring-1 ring-white/40 dark:ring-white/10">
+            <!-- TODO: reemplazar imagen showcase -->
+            <img src="https://images.unsplash.com/photo-1508341591423-4347099e1f19?q=80&w=1400&auto=format&fit=crop" alt="Templo griego en Minecraft" class="h-full w-full object-cover">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAFF -->
+  <section id="staff" class="py-16 md:py-24 bg-white/60 dark:bg-slate-800/40">
+    <div class="mx-auto max-w-6xl px-6">
+      <h2 class="font-display text-3xl mb-8">Staff</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card Staff -->
+        <article class="glass rounded-2xl p-6 shadow-suave">
+          <div class="flex items-center gap-4">
+            <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
+                 src="https://mc-heads.net/avatar/IanMazzini/128" alt="IanMazzini">
+            <div>
+              <h3 class="font-semibold">IanMazzini</h3>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Fundador & Desarrollador</p>
+            </div>
+          </div>
+          <p class="mt-4 text-sm">“Si no existe, lo creamos.”</p>
+        </article>
+
+        <article class="glass rounded-2xl p-6 shadow-suave">
+          <div class="flex items-center gap-4">
+            <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
+                 src="https://mc-heads.net/avatar/Roman/128" alt="Roman">
+            <div>
+              <h3 class="font-semibold">Roman</h3>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Administrador Técnico</p>
+            </div>
+          </div>
+          <p class="mt-4 text-sm">Infra y plugins bajo control.</p>
+        </article>
+
+        <article class="glass rounded-2xl p-6 shadow-suave">
+          <div class="flex items-center gap-4">
+            <img class="h-16 w-16 rounded-xl object-cover ring-2 ring-yellow-300/60"
+                 src="https://mc-heads.net/avatar/Eco/128" alt="Eco">
+            <div>
+              <h3 class="font-semibold">Eco</h3>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Moderador Jefe</p>
+            </div>
+          </div>
+          <p class="mt-4 text-sm">Justicia con mano de Zeus.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SANCIONES -->
+  <section id="sanctions" class="py-16 md:py-24">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="font-display text-3xl">Historial de sanciones</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Consulta pública (ej: LiteBans API).</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="sanctionSearch" type="text" placeholder="Buscar jugador..."
+                 class="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-800/60">
+          <button id="refreshSanctions" class="px-4 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-6 overflow-x-auto glass rounded-2xl">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-900/80 text-white dark:bg-slate-800/80">
+            <tr>
+              <th class="text-left p-3">Jugador</th>
+              <th class="text-left p-3">Acción</th>
+              <th class="text-left p-3">Motivo</th>
+              <th class="text-left p-3">Duración</th>
+              <th class="text-left p-3">Fecha</th>
+              <th class="text-left p-3">Staff</th>
+            </tr>
+          </thead>
+          <tbody id="sanctionsBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+            <!-- Fila ejemplo - reemplazar por datos de API -->
+            <tr class="hover:bg-white/40 dark:hover:bg-slate-800/40">
+              <td class="p-3 font-mono">Jugador123</td>
+              <td class="p-3">BAN</td>
+              <td class="p-3">X-Ray</td>
+              <td class="p-3">7 días</td>
+              <td class="p-3">2025-10-01</td>
+              <td class="p-3">Eco</td>
+            </tr>
+            <tr class="hover:bg-white/40 dark:hover:bg-slate-800/40">
+              <td class="p-3 font-mono">Athena</td>
+              <td class="p-3">MUTE</td>
+              <td class="p-3">Spam</td>
+              <td class="p-3">2 horas</td>
+              <td class="p-3">2025-09-28</td>
+              <td class="p-3">Roman</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">
+        <!-- TODO: endpoint real -->
+        Integra tu backend en <code>/api/sanctions</code> para poblar la tabla (ej. LiteBans, AdvancedBan).
+      </p>
+    </div>
+  </section>
+
+  <!-- CUENTA / LOGIN -->
+  <section id="account" class="py-16 md:py-24 bg-white/60 dark:bg-slate-800/40">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="font-display text-3xl mb-2">Tu cuenta</h2>
+          <p class="text-slate-600 dark:text-slate-300">
+            Iniciá sesión para ver tu progreso, misiones activas, puntos de poder y rango.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <!-- TODO: configurar OAuth2 Discord -->
+            <a href="/auth/discord" class="px-4 py-2 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600">
+              Iniciar con Discord
+            </a>
+            <!-- Ejemplo “login Minecraft”: username simple -->
+            <button id="openMinecraftLogin" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-white/50 dark:hover:bg-slate-800/50">
+              Vincular Minecraft
+            </button>
+          </div>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">
+            <!-- TODO: endpoint real -->
+            Después de autenticarse, POST a <code>/api/link/minecraft</code> con tu username.
+          </p>
+        </div>
+        <div class="glass rounded-2xl p-6 shadow-suave">
+          <h3 class="font-semibold mb-2">Panel rápido</h3>
+          <ul class="text-sm space-y-2">
+            <li>🏆 Misiones activas: <span class="font-semibold">3</span></li>
+            <li>⚡ Puntos de poder: <span class="font-semibold">120</span></li>
+            <li>🎖️ Rango: <span class="font-semibold">Héroe</span></li>
+          </ul>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">*Datos de ejemplo para UI.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DYNMAP -->
+  <section id="map" class="py-16 md:py-24">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex items-end justify-between gap-4">
+        <h2 class="font-display text-3xl">Mapa en vivo (Dynmap)</h2>
+        <a class="px-4 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900"
+           href="https://map.tu-dominio.com" target="_blank" rel="noopener">Abrir completa</a>
+      </div>
+      <div class="mt-6 aspect-video overflow-hidden rounded-2xl shadow-suave ring-1 ring-slate-200 dark:ring-slate-700">
+        <!-- TODO: reemplazar src por tu dynmap -->
+        <iframe src="https://map.tu-dominio.com" class="w-full h-full" loading="lazy"></iframe>
+      </div>
+      <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Si usás proxy/Nginx, recuerda habilitar iframes (X-Frame-Options).</p>
+    </div>
+  </section>
+
+  <!-- NOTICIAS / EVENTOS -->
+  <section id="news" class="py-16 md:py-24 bg-white/60 dark:bg-slate-800/40">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex items-end justify-between">
+        <h2 class="font-display text-3xl">Noticias & Eventos</h2>
+        <a href="/blog" class="text-sm hover:underline">Ver todo</a>
+      </div>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <!-- Cards ejemplo -->
+        <article class="glass rounded-2xl p-5 shadow-suave">
+          <h3 class="font-semibold">Nueva línea de misiones: Eco, Ánima, Éter, Caos</h3>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Desbloqueá recompensas únicas y ascensos de rango.</p>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Publicado 2025-10-06</p>
+        </article>
+        <article class="glass rounded-2xl p-5 shadow-suave">
+          <h3 class="font-semibold">Evento PvE — Guardianes del Templo</h3>
+          <p class="mt-2 text-sm">Defiende Heliópolis de las bestias del Silencio.</p>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Sábado 22:00</p>
+        </article>
+        <article class="glass rounded-2xl p-5 shadow-suave">
+          <h3 class="font-semibold">Economía renovada</h3>
+          <p class="mt-2 text-sm">Nuevos ítems comerciables y ajustes del banco.</p>
+          <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">Patch 1.1.0</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMUNIDAD -->
+  <section id="community" class="py-16 md:py-24">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <div>
+          <h2 class="font-display text-3xl mb-3">Comunidad</h2>
+          <p class="text-slate-600 dark:text-slate-300">
+            Unite al Discord para enterarte de eventos, reportar bugs y sugerir ideas.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a class="px-4 py-2 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600" href="https://discord.gg/TU_INVITE" target="_blank" rel="noopener">Discord</a>
+            <a class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-white/50 dark:hover:bg-slate-800/50" href="https://youtube.com/" target="_blank" rel="noopener">YouTube</a>
+            <a class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-white/50 dark:hover:bg-slate-800/50" href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-4 shadow-suave">
+          <!-- TODO: reemplazar con tu widget Discord real -->
+          <iframe src="https://discord.com/widget?id=1234567890&theme=dark" width="100%" height="380" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Configura el Widget de la comunidad en Ajustes de Discord.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section id="join" class="py-20 bg-gradient-to-b from-egeo/90 to-slate-900 text-white">
+    <div class="mx-auto max-w-5xl px-6 text-center">
+      <h2 class="font-display text-3xl md:text-4xl">¿Listo para tu epopeya?</h2>
+      <p class="mt-3 text-slate-200">Entra hoy y reclamá el favor de los dioses.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <button class="px-5 py-3 rounded-xl bg-dorado text-slate-900 font-semibold hover:brightness-110 shadow-suave" onclick="copyIP()">Copiar IP</button>
+        <a class="px-5 py-3 rounded-xl bg-white/20 border border-white/30 hover:bg-white/30" href="#map">Dynmap</a>
+        <a class="px-5 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600" href="https://discord.gg/TU_INVITE" target="_blank" rel="noopener">Discord</a>
+      </div>
+      <div class="mt-4 text-sm">IP: <span class="font-mono" id="serverIP2">play.greeklands.ar</span></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-10">
+    <div class="mx-auto max-w-6xl px-6 text-sm text-slate-500 dark:text-slate-400 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>© <span id="year"></span> GreekLands. Todos los derechos reservados.</div>
+      <div class="flex items-center gap-4">
+        <a href="/reglas" class="hover:underline">Reglas</a>
+        <a href="/politica-sanciones" class="hover:underline">Política de sanciones</a>
+        <a href="/contacto" class="hover:underline">Contacto</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL VINCULACIÓN MINECRAFT -->
+  <div id="mcModal" class="fixed inset-0 z-50 hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative glass rounded-2xl p-6 w-full max-w-md mx-4 shadow-suave">
+      <div class="flex items-center justify-between">
+        <h3 class="font-semibold">Vincular cuenta de Minecraft</h3>
+        <button id="closeMcModal" class="text-xl leading-none">×</button>
+      </div>
+      <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+        Ingresá tu username para vincularlo a tu cuenta.
+      </p>
+      <form id="mcForm" class="mt-4 space-y-3">
+        <input id="mcUser" type="text" placeholder="Tu username"
+               class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-800/60" required>
+        <button class="w-full px-4 py-2 rounded-xl bg-egeo/90 text-white hover:bg-egeo">
+          Vincular
+        </button>
+      </form>
+      <p id="mcMsg" class="mt-3 text-xs"></p>
+    </div>
+  </div>
+
+  <script>
+    // Interacciones básicas
+    const $ = (q) => document.querySelector(q);
+    const $$ = (q) => document.querySelectorAll(q);
+
+    // Navbar mobile
+    $('#openMenu').addEventListener('click', () => {
+      $('#mobileMenu').classList.toggle('hidden');
+    });
+
+    // Modo oscuro
+    $('#toggleTheme').addEventListener('click', () => {
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem('gl-theme', isDark ? 'dark' : 'light');
+    });
+
+    // Copiar IP
+    function copyIP() {
+      const ip = $('#serverIP').textContent.trim();
+      navigator.clipboard.writeText(ip).then(() => {
+        alert('IP copiada: ' + ip);
+      });
+    }
+
+    // Año footer
+    $('#year').textContent = new Date().getFullYear();
+
+    // Modal Minecraft
+    const mcModal = $('#mcModal');
+    $('#openMinecraftLogin').addEventListener('click', () => mcModal.classList.remove('hidden'));
+    $('#closeMcModal').addEventListener('click', () => mcModal.classList.add('hidden'));
+    mcModal.addEventListener('click', (e) => {
+      if (e.target === mcModal) mcModal.classList.add('hidden');
+    });
+
+    // Vinculación Minecraft (DEMO)
+    $('#mcForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = $('#mcUser').value.trim();
+      if (!user) return;
+      // TODO: Reemplazar por tu endpoint real:
+      // const res = await fetch('/api/link/minecraft', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: user }) });
+      // const data = await res.json();
+      // Mensaje demo:
+      $('#mcMsg').textContent = `✅ Username ${user} vinculado (demo).`;
+      $('#mcMsg').className = 'mt-3 text-xs text-green-600';
+      setTimeout(() => mcModal.classList.add('hidden'), 1200);
+    });
+
+    // Sanciones: filtro básico en cliente
+    const filterSanctions = () => {
+      const term = $('#sanctionSearch').value.toLowerCase();
+      $$('#sanctionsBody tr').forEach(tr => {
+        const player = tr.children[0]?.textContent.toLowerCase() || '';
+        tr.style.display = player.includes(term) ? '' : 'none';
+      });
+    };
+    $('#sanctionSearch').addEventListener('input', filterSanctions);
+
+    // Sanciones: recarga desde API (DEMO)
+    $('#refreshSanctions').addEventListener('click', async () => {
+      // TODO: apunta a tu backend (LiteBans/AdvancedBan)
+      // const res = await fetch('/api/sanctions');
+      // const rows = await res.json();
+      // Render...
+      alert('Conecta /api/sanctions a tu plugin/DB. (Demo)');
+    });
+  </script>
+</body>
+</html>
